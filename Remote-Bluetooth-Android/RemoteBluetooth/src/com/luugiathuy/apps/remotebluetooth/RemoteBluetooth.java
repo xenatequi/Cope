@@ -21,38 +21,33 @@ import android.widget.Toast;
 
 public class RemoteBluetooth extends Activity {
 
-	// Layout view
-	private TextView mTitle;
-
 	// Intent request codes
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 2;
-
-	// Local Bluetooth adapter
+	
+	private TextView mStatusText;
+	private Handler mHandler;
+	private GestureDetector gestureDetector;
 	private BluetoothAdapter mBluetoothAdapter = null;
+	
 	// Member object for Bluetooth Command Service
 	private BluetoothCommandService mCommandService = null;
-	private GestureDetector gestureDetector;
-	private Handler mHandler;
+	
 	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		gestureDetector = new GestureDetector(RemoteBluetooth.this, new MyGestureListener());
 		// Set up the window layout
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.main);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
 				R.layout.custom_title);
 
-		// Set up the custom title
-		mTitle = (TextView) findViewById(R.id.title_left_text);
-		mTitle.setText(R.string.app_name);
-		mTitle = (TextView) findViewById(R.id.title_right_text);
-		mHandler = new MyHandler(mTitle, getApplicationContext());
-		// Get local Bluetooth adapter
+		mStatusText = (TextView) findViewById(R.id.title_right_text);
+		mHandler = new MyHandler(mStatusText, getApplicationContext());
+		gestureDetector = new GestureDetector(RemoteBluetooth.this, new MyGestureListener());
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 		// If the adapter is null, then Bluetooth is not supported
@@ -97,11 +92,6 @@ public class RemoteBluetooth extends Activity {
 		}
 	}
 
-	private void setupCommand() {
-		// Initialize the BluetoothChatService to perform bluetooth connections
-		mCommandService = new BluetoothCommandService(this, mHandler);
-	}
-
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -110,15 +100,7 @@ public class RemoteBluetooth extends Activity {
 			mCommandService.stop();
 	}
 
-	private void ensureDiscoverable() {
-		if (mBluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-			Intent discoverableIntent = new Intent(
-					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-			discoverableIntent.putExtra(
-					BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-			startActivity(discoverableIntent);
-		}
-	}
+	
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
@@ -149,6 +131,11 @@ public class RemoteBluetooth extends Activity {
 		}
 	}
 
+	private void setupCommand() {
+		// Initialize the BluetoothChatService to perform bluetooth connections
+		mCommandService = new BluetoothCommandService(this, mHandler);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -172,6 +159,16 @@ public class RemoteBluetooth extends Activity {
 		return false;
 	}
 
+	private void ensureDiscoverable() {
+		if (mBluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+			Intent discoverableIntent = new Intent(
+					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+			discoverableIntent.putExtra(
+					BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+			startActivity(discoverableIntent);
+		}
+	}
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
