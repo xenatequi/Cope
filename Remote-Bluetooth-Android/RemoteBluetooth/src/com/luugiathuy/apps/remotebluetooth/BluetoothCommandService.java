@@ -29,8 +29,6 @@ public class BluetoothCommandService {
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
     private int mState;
-//    private BluetoothDevice mSavedDevice;
-//    private int mConnectionLostCount;
     
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
@@ -52,7 +50,6 @@ public class BluetoothCommandService {
     public BluetoothCommandService(Context context, Handler handler) {
     	mAdapter = BluetoothAdapter.getDefaultAdapter();
     	mState = STATE_NONE;
-    	//mConnectionLostCount = 0;
     	mHandler = handler;
     }
     
@@ -211,6 +208,7 @@ public class BluetoothCommandService {
      * with a device. It runs straight through; the connection either
      * succeeds or fails.
      */
+    
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
@@ -327,10 +325,6 @@ public class BluetoothCommandService {
         public void write(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
-
-                // Share the sent message back to the UI Activity
-//                mHandler.obtainMessage(BluetoothChat.MESSAGE_WRITE, -1, -1, buffer)
-//                        .sendToTarget();
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
             }
@@ -339,10 +333,6 @@ public class BluetoothCommandService {
         public void write(int out) {
         	try {
                 mmOutStream.write(out);
-
-                // Share the sent message back to the UI Activity
-//                mHandler.obtainMessage(BluetoothChat.MESSAGE_WRITE, -1, -1, buffer)
-//                        .sendToTarget();
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
             }
