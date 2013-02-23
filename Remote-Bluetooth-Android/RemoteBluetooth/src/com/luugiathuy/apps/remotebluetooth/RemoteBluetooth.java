@@ -19,7 +19,7 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RemoteBluetooth extends Activity implements OnGestureListener{
+public class RemoteBluetooth extends Activity {
 
 	// Layout view
 	private TextView mTitle;
@@ -28,25 +28,11 @@ public class RemoteBluetooth extends Activity implements OnGestureListener{
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 2;
 
-	// Message types sent from the BluetoothChatService Handler
-	public static final int MESSAGE_STATE_CHANGE = 1;
-	public static final int MESSAGE_READ = 2;
-	public static final int MESSAGE_WRITE = 3;
-	public static final int MESSAGE_DEVICE_NAME = 4;
-	public static final int MESSAGE_TOAST = 5;
-
-	// Key names received from the BluetoothCommandService Handler
-	public static final String DEVICE_NAME = "device_name";
-	public static final String TOAST = "toast";
-
-	// Name of the connected device
-	private String mConnectedDeviceName = null;
 	// Local Bluetooth adapter
 	private BluetoothAdapter mBluetoothAdapter = null;
 	// Member object for Bluetooth Command Service
 	private BluetoothCommandService mCommandService = null;
 	private GestureDetector gestureDetector;
-
 	private Handler mHandler;
 	
 	/** Called when the activity is first created. */
@@ -54,7 +40,7 @@ public class RemoteBluetooth extends Activity implements OnGestureListener{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		gestureDetector = new GestureDetector(RemoteBluetooth.this, this);
+		gestureDetector = new GestureDetector(RemoteBluetooth.this, new MyGestureListener());
 		// Set up the window layout
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.main);
@@ -203,43 +189,4 @@ public class RemoteBluetooth extends Activity implements OnGestureListener{
 	public boolean onTouchEvent(MotionEvent me) {
 	    return gestureDetector.onTouchEvent(me);
 	}
-
-	
-	@Override
-	public boolean onDown(MotionEvent e) {
-		return false;
-	}
-
-	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-			float velocityY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onLongPress(MotionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-			float distanceY) {
-		Log.d("Double Tap", "Tapped at: (" + distanceX + "," + distanceY + ")");
-		return true;
-	}
-
-	@Override
-	public void onShowPress(MotionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean onSingleTapUp(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }
