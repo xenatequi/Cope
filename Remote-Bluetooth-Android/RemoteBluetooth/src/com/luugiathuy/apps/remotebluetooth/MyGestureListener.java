@@ -7,6 +7,11 @@ import android.view.MotionEvent;
 
 public class MyGestureListener implements OnGestureListener {
 
+	private BluetoothCommandService mCommandService;
+	
+	public MyGestureListener(BluetoothCommandService commandService){
+		mCommandService = commandService;
+	}
 	
 	@Override
 	public boolean onDown(MotionEvent e) {
@@ -30,6 +35,7 @@ public class MyGestureListener implements OnGestureListener {
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY) {
 		Log.d("Double Tap", "Tapped at: (" + distanceX + "," + distanceY + ")");
+		mCommandService.write(BluetoothCommandService.MOUSE_MOVE);
 		return true;
 	}
 
