@@ -122,7 +122,7 @@ public class BluetoothCommandService {
         if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
 
         // Start the thread to manage the connection and perform transmissions
-        mConnectedThread = new ConnectedThread(socket);
+        mConnectedThread = new ConnectedThread(socket, mHandler, this);
         mConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
@@ -192,7 +192,7 @@ public class BluetoothCommandService {
     /**
      * Indicate that the connection was lost and notify the UI Activity.
      */
-    private void connectionLost() {
+    public void connectionLost() {
         	setState(STATE_LISTEN);
 	        // Send a failure message back to the Activity
 	        Message msg = mHandler.obtainMessage(MyHandler.MESSAGE_TOAST);
@@ -274,7 +274,7 @@ public class BluetoothCommandService {
      * This thread runs during a connection with a remote device.
      * It handles all incoming and outgoing transmissions.
      */
-    private class ConnectedThread extends Thread {
+ /*   private class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
@@ -322,7 +322,7 @@ public class BluetoothCommandService {
          * Write to the connected OutStream.
          * @param buffer  The bytes to write
          */
-        public void write(byte[] buffer) {
+  /*      public void write(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
             } catch (IOException e) {
@@ -347,4 +347,5 @@ public class BluetoothCommandService {
             }
         }
     }
+    */
 }
