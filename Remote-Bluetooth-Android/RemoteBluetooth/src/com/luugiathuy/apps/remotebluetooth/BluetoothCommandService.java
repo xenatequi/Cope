@@ -1,10 +1,6 @@
 package com.luugiathuy.apps.remotebluetooth;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.UUID;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -54,25 +50,7 @@ public class BluetoothCommandService {
     }
     
     /**
-     * Set the current state of the chat connection
-     * @param state  An integer defining the current connection state
-     */
-    private synchronized void setState(int state) {
-        if (D) Log.d(TAG, "setState() " + mState + " -> " + state);
-        mState = state;
-
-        // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(MyHandler.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
-    }
-
-    /**
-     * Return the current connection state. */
-    public synchronized int getState() {
-        return mState;
-    }
-    
-    /**
-     * Start the chat service. Specifically start AcceptThread to begin a
+     * Start the chat service. Specifically start ConnectThread to begin a
      * session in listening (server) mode. Called by the Activity onResume() */
     public synchronized void start() {
         if (D) Log.d(TAG, "start");
@@ -200,10 +178,28 @@ public class BluetoothCommandService {
 	        bundle.putString(MyHandler.TOAST, "Device connection was lost");
 	        msg.setData(bundle);
 	        mHandler.sendMessage(msg);
-//        }
+    }
+    
+    /**
+     * Set the current state of the chat connection
+     * @param state  An integer defining the current connection state
+     */
+    private synchronized void setState(int state) {
+        if (D) Log.d(TAG, "setState() " + mState + " -> " + state);
+        mState = state;
+
+        // Give the new state to the Handler so the UI Activity can update
+        mHandler.obtainMessage(MyHandler.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+    }
+
+    /**
+     * Return the current connection state. */
+    public synchronized int getState() {
+        return mState;
     }
     
     public void setConnectThread(ConnectThread connectThread){
     	mConnectThread = connectThread;
     }
+    
 }
