@@ -102,7 +102,7 @@ public class BluetoothCommandService {
         if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
 
         // Start the thread to connect with the given device
-        mConnectThread = new ConnectThread(device);
+        mConnectThread = new ConnectThread(device, mAdapter, this);
         mConnectThread.start();
         setState(STATE_CONNECTING);
     }
@@ -178,7 +178,7 @@ public class BluetoothCommandService {
     /**
      * Indicate that the connection attempt failed and notify the UI Activity.
      */
-    private void connectionFailed() {
+    public void connectionFailed() {
         setState(STATE_LISTEN);
 
         // Send a failure message back to the Activity
@@ -203,12 +203,16 @@ public class BluetoothCommandService {
 //        }
     }
     
+    public void setConnectThread(ConnectThread connectThread){
+    	mConnectThread = connectThread;
+    }
+    
     /**
      * This thread runs while attempting to make an outgoing connection
      * with a device. It runs straight through; the connection either
      * succeeds or fails.
      */
-    
+/*    
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
@@ -269,7 +273,7 @@ public class BluetoothCommandService {
             }
         }
     }
-
+*/
     /**
      * This thread runs during a connection with a remote device.
      * It handles all incoming and outgoing transmissions.
