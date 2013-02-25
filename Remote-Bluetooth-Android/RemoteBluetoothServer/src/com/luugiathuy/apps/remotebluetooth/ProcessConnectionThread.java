@@ -52,6 +52,7 @@ public class ProcessConnectionThread implements Runnable{
 	private void processCommand(int command) {
 		try {
 			Robot robot = new Robot();
+			robot.mouseMove(command, 0);
 			switch (command) {
 	    	case KEY_RIGHT:
 	    		robot.keyPress(KeyEvent.VK_RIGHT);
