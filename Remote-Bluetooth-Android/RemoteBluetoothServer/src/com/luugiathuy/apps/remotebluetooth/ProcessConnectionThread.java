@@ -14,7 +14,6 @@ public class ProcessConnectionThread implements Runnable{
 	private static final int EXIT_CMD = -1;
 	private static final int KEY_RIGHT = 1;
 	private static final int KEY_LEFT = 2;
-	private static final int MOUSE_MOVE = 3;
 	
 	public ProcessConnectionThread(StreamConnection connection)
 	{
@@ -66,9 +65,6 @@ public class ProcessConnectionThread implements Runnable{
 	    		// release the key after it is pressed. Otherwise the event just keeps getting trigged	    		
 	    		robot.keyRelease(KeyEvent.VK_LEFT);
 	    		break;
-	    	case MOUSE_MOVE:
-	    		System.out.println("Mouse");
-	    		break;	
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
