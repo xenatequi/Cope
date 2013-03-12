@@ -2,6 +2,8 @@ package com.luugiathuy.apps.remotebluetooth;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
@@ -151,6 +153,19 @@ public class BluetoothCommandService {
      * @param out The bytes to write
      * @see ConnectedThread#write(byte[])
      */
+    
+    public void write(Mouse mouse) {
+        // Create temporary object
+        ConnectedThread r;
+        // Synchronize a copy of the ConnectedThread
+        synchronized (this) {
+            if (mState != STATE_CONNECTED) return;
+            r = mConnectedThread;
+        }
+        // Perform the write unsynchronized
+        r.write(mouse);
+    }
+    
     public void write(byte[] out) {
         // Create temporary object
         ConnectedThread r;
@@ -277,23 +292,29 @@ public class BluetoothCommandService {
     private class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
-        private final OutputStream mmOutStream;
+        private final ObjectOutputStream mmOutStream;
 
         public ConnectedThread(BluetoothSocket socket) {
             Log.d(TAG, "create ConnectedThread");
             mmSocket = socket;
-            InputStream tmpIn = null;
-            OutputStream tmpOut = null;
-
+            ObjectInputStream tmpIn = null;
+            ObjectOutputStream tmpOut = null;
+            InputStream is=null;
             // Get the BluetoothSocket input and output streams
             try {
-                tmpIn = socket.getInputStream();
-                tmpOut = socket.getOutputStream();
+            	is = socket.getInputStream();
+            	OutputStream os = socket.getOutputStream();
+            	Log.e(TAG, "simple stream");//////////////////////////////////////////////////
+                tmpOut = new ObjectOutputStream(os);
+                tmpOut.flush();
+                Log.e(TAG, "object stream");//////////////////////////////////////////////////
+           //     tmpIn = new ObjectInputStream(is);
+                
             } catch (IOException e) {
                 Log.e(TAG, "temp sockets not created", e);
             }
-
-            mmInStream = tmpIn;
+            Log.e(TAG, "el streamet t3amlou");//////////////////////////////////////////////////
+            mmInStream = is;
             mmOutStream = tmpOut;
         }
 
@@ -305,7 +326,7 @@ public class BluetoothCommandService {
             while (true) {
                 try {
                 	// Read from the InputStream
-                    int bytes = mmInStream.read(buffer);
+                    int bytes = mmInStream.read();
 
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(MyHandler.MESSAGE_READ, bytes, -1, buffer)
@@ -322,6 +343,15 @@ public class BluetoothCommandService {
          * Write to the connected OutStream.
          * @param buffer  The bytes to write
          */
+        
+        public void write(Mouse mouse) {
+            try {
+                mmOutStream.writeObject(mouse);
+            } catch (IOException e) {
+                Log.e(TAG, "Exception during write", e);
+            }
+        }
+        
         public void write(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);

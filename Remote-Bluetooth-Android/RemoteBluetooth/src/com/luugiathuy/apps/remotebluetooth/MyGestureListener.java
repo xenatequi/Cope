@@ -4,8 +4,10 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 
-public class MyGestureListener implements OnGestureListener {
+public class MyGestureListener implements OnGestureListener, OnTouchListener{
 
 	BluetoothCommandService mCommandService;
 	
@@ -35,8 +37,12 @@ public class MyGestureListener implements OnGestureListener {
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY) {
-		mCommandService.write((int)distanceX);
-		Log.d("Scroll", "Tapped at: (" + distanceX + "," + distanceY + ")");
+		for(int i =0; i<5; i++){
+			Mouse command = new Mouse(Mouse.SCROLL, (int)e1.getX(i), (int)e1.getY(i));
+			mCommandService.write(command);
+			Log.d("Scroll", "Tapped at "+ i+": (" + 10*(int)e1.getX(i) + "," + 10*(int)e1.getY(i) + ")");
+		}
+		
 		return true;
 	}
 
@@ -50,5 +56,14 @@ public class MyGestureListener implements OnGestureListener {
 	public boolean onSingleTapUp(MotionEvent e) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		
+		Mouse command = new Mouse(event.getAction(), (int)event.getX(), (int)event.getY());
+		mCommandService.write(command);
+		Log.d("Scroll", "Tapped at : (" +event.getAction()+ (int)event.getX() + "," + (int)event.getY() + ")");
+		return true;
 	}
 }

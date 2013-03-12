@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,11 +45,12 @@ public class RemoteBluetooth extends Activity {
 		setContentView(R.layout.main);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
 				R.layout.custom_title);
-
 		mStatusText = (TextView) findViewById(R.id.title_right_text);
 		mHandler = new MyHandler(mStatusText, getApplicationContext());
 		setupCommand();
-		gestureDetector = new GestureDetector(RemoteBluetooth.this, new MyGestureListener(mCommandService));
+	//	gestureDetector = new GestureDetector(RemoteBluetooth.this, new MyGestureListener(mCommandService));
+		View layout = (View)findViewById(R.id.layout);
+		layout.setOnTouchListener(new MyGestureListener(mCommandService));
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 		// If the adapter is null, then Bluetooth is not supported

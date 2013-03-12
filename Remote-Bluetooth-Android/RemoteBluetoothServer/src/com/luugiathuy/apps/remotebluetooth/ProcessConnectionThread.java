@@ -1,8 +1,8 @@
 package com.luugiathuy.apps.remotebluetooth;
 
 import java.awt.Robot;
-import java.awt.event.KeyEvent;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 
 import javax.microedition.io.StreamConnection;
 
@@ -26,20 +26,22 @@ public class ProcessConnectionThread implements Runnable{
 			
 			// prepare to receive data
 			InputStream inputStream = mConnection.openInputStream();
-	        
+	        ObjectInputStream ois = new ObjectInputStream(inputStream);
+
 			System.out.println("waiting for input");
-	        
-	        while (true) {
-	        	int command = inputStream.read();
-	        	
+    	
+			while (true) {
+	        	Mouse command = (Mouse)ois.readObject();
+/*	        	
 	        	if (command == EXIT_CMD)
 	        	{	
 	        		System.out.println("finish process");
 	        		break;
 	        	}
-	        	
+*/	        	
 	        	processCommand(command);
-        	}
+	        	
+        	}	
         } catch (Exception e) {
     		e.printStackTrace();
     	}
@@ -49,11 +51,20 @@ public class ProcessConnectionThread implements Runnable{
 	 * Process the command from client
 	 * @param command the command code
 	 */
-	private void processCommand(int command) {
+	private void processCommand(Mouse command) {
 		try {
 			Robot robot = new Robot();
-			robot.mouseMove(command, 0);
-			switch (command) {
+			
+			//get current mouse location
+	/*		Point point = MouseInfo.getPointerInfo().getLocation();
+			double x = point.getX();
+			double y = point.getY();
+			System.out.println(x + " "+ y);
+	*/
+			robot.mouseMove((int)command.getX(), (int)command.getY());
+			
+			
+/*			switch (command) {
 	    	case KEY_RIGHT:
 	    		robot.keyPress(KeyEvent.VK_RIGHT);
 	    		System.out.println("Right");
@@ -67,7 +78,7 @@ public class ProcessConnectionThread implements Runnable{
 	    		robot.keyRelease(KeyEvent.VK_LEFT);
 	    		break;
 			}
-		} catch (Exception e) {
+*/		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
