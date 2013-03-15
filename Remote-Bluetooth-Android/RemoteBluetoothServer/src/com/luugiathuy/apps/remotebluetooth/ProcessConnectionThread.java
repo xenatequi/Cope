@@ -1,5 +1,7 @@
 package com.luugiathuy.apps.remotebluetooth;
 
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.Robot;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -56,12 +58,12 @@ public class ProcessConnectionThread implements Runnable{
 			Robot robot = new Robot();
 			
 			//get current mouse location
-	/*		Point point = MouseInfo.getPointerInfo().getLocation();
+			Point point = MouseInfo.getPointerInfo().getLocation();
 			double x = point.getX();
 			double y = point.getY();
 			System.out.println(x + " "+ y);
-	*/
-			robot.mouseMove((int)command.getX(), (int)command.getY());
+	
+			robot.mouseMove((int)x-(int)command.getX(), (int)y-(int)command.getY());
 			
 			
 /*			switch (command) {

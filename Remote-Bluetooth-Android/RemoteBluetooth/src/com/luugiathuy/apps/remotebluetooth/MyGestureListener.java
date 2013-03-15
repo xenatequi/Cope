@@ -35,14 +35,11 @@ public class MyGestureListener implements OnGestureListener, OnTouchListener{
 	}
 
 	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-			float distanceY) {
-		for(int i =0; i<5; i++){
-			Mouse command = new Mouse(Mouse.SCROLL, (int)e1.getX(i), (int)e1.getY(i));
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+			Mouse command = new Mouse(Mouse.SCROLL, (int)distanceX*2, (int)distanceY*2);
 			mCommandService.write(command);
-			Log.d("Scroll", "Tapped at "+ i+": (" + 10*(int)e1.getX(i) + "," + 10*(int)e1.getY(i) + ")");
-		}
-		
+			Log.d("Scroll", "Tapped at : (" + (int)distanceX + "," + (int)distanceY + ")");
+
 		return true;
 	}
 

@@ -48,9 +48,9 @@ public class RemoteBluetooth extends Activity {
 		mStatusText = (TextView) findViewById(R.id.title_right_text);
 		mHandler = new MyHandler(mStatusText, getApplicationContext());
 		setupCommand();
-	//	gestureDetector = new GestureDetector(RemoteBluetooth.this, new MyGestureListener(mCommandService));
-		View layout = (View)findViewById(R.id.layout);
-		layout.setOnTouchListener(new MyGestureListener(mCommandService));
+		gestureDetector = new GestureDetector(RemoteBluetooth.this, new MyGestureListener(mCommandService));
+	//	View layout = (View)findViewById(R.id.layout);
+	//	layout.setOnTouchListener(new MyGestureListener(mCommandService));
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 		// If the adapter is null, then Bluetooth is not supported
