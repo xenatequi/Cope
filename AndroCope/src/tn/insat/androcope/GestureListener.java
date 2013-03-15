@@ -23,8 +23,7 @@ public class GestureListener implements OnGestureListener{
 	}
 
 	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-			float velocityY) {
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -37,10 +36,9 @@ public class GestureListener implements OnGestureListener{
 
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-			Mouse command = new Mouse(Mouse.SCROLL, (int)distanceX*2, (int)distanceY*2);
+			Mouse command = new Mouse(Mouse.SCROLL, (int)(distanceX*1.5), (int)(distanceY*1.5));
 			mCommandService.write(command);
 			Log.d("Scroll", "Tapped at : (" + (int)distanceX + "," + (int)distanceY + ")");
-
 		return true;
 	}
 
@@ -52,7 +50,9 @@ public class GestureListener implements OnGestureListener{
 
 	@Override
 	public boolean onSingleTapUp(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
+		Mouse command = new Mouse(Mouse.LEFT_CLICK, (int)e.getX(), (int)e.getY());
+		mCommandService.write(command);
+		Log.d("SingleTap", "single tap");
+		return true;
 	}
 }
