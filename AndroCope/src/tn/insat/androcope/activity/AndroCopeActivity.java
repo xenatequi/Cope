@@ -1,4 +1,4 @@
-package tn.insat.androcope;
+package tn.insat.androcope.activity;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -19,7 +19,14 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
+import tn.insat.androcope.BluetoothCommandService;
+import tn.insat.androcope.GestureListener;
+import tn.insat.androcope.MessageHandler;
 import tn.insat.androcope.R;
+import tn.insat.androcope.R.id;
+import tn.insat.androcope.R.layout;
+import tn.insat.androcope.R.menu;
+import tn.insat.androcope.R.string;
 
 public class AndroCopeActivity extends Activity {
 
@@ -27,13 +34,13 @@ public class AndroCopeActivity extends Activity {
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 2;
 	
-	private TextView mStatusText;
-	private Handler mHandler;
+	private TextView statusText;
+	private Handler handler;
 	private GestureDetector gestureDetector;
-	private BluetoothAdapter mBluetoothAdapter = null;
+	private BluetoothAdapter bluetoothAdapter = null;
 	
 	// Member object for Bluetooth Command Service
-	private BluetoothCommandService mCommandService = null;
+	private BluetoothCommandService commandService = null;
 	
 	
 	/** Called when the activity is first created. */
@@ -44,20 +51,22 @@ public class AndroCopeActivity extends Activity {
 		// Set up the window layout
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.main);
-		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
-				R.layout.custom_title);
-		mStatusText = (TextView) findViewById(R.id.title_right_text);
-		mHandler = new MyHandler(mStatusText, getApplicationContext());
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
+		
+		//handler
+		statusText = (TextView) findViewById(R.id.title_right_text);
+		handler = new MessageHandler(statusText, getApplicationContext());
+		
 		setupCommand();
-		gestureDetector = new GestureDetector(AndroCopeActivity.this, new MyGestureListener(mCommandService));
-	//	View layout = (View)findViewById(R.id.layout);
-	//	layout.setOnTouchListener(new MyGestureListener(mCommandService));
-		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		
+		gestureDetector = new GestureDetector(AndroCopeActivity.this, new GestureListener(commandService));
+		
+		//bluetooth
+		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 		// If the adapter is null, then Bluetooth is not supported
-		if (mBluetoothAdapter == null) {
-			Toast.makeText(this, "Bluetooth is not available",
-					Toast.LENGTH_LONG).show();
+		if (bluetoothAdapter == null) {
+			Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
 			finish();
 			return;
 		}
@@ -69,14 +78,14 @@ public class AndroCopeActivity extends Activity {
 
 		// If BT is not on, request that it be enabled.
 		// setupCommand() will then be called during onActivityResult
-		if (!mBluetoothAdapter.isEnabled()) {
+		if (!bluetoothAdapter.isEnabled()) {
 			Intent enableIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
 		}
 		// otherwise set up the command service
 		else {
-			if (mCommandService == null)
+			if (commandService == null)
 				setupCommand();
 		}
 	}
@@ -89,9 +98,9 @@ public class AndroCopeActivity extends Activity {
 		// not enabled during onStart(), so we were paused to enable it...
 		// onResume() will be called when ACTION_REQUEST_ENABLE activity
 		// returns.
-		if (mCommandService != null) {
-			if (mCommandService.getState() == BluetoothCommandService.STATE_NONE) {
-				mCommandService.start();
+		if (commandService != null) {
+			if (commandService.getState() == BluetoothCommandService.STATE_NONE) {
+				commandService.start();
 			}
 		}
 	}
@@ -100,8 +109,8 @@ public class AndroCopeActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 
-		if (mCommandService != null)
-			mCommandService.stop();
+		if (commandService != null)
+			commandService.stop();
 	}
 
 	
@@ -115,10 +124,10 @@ public class AndroCopeActivity extends Activity {
 				String address = data.getExtras().getString(
 						DeviceListActivity.EXTRA_DEVICE_ADDRESS);
 				// Get the BLuetoothDevice object
-				BluetoothDevice device = mBluetoothAdapter
+				BluetoothDevice device = bluetoothAdapter
 						.getRemoteDevice(address);
 				// Attempt to connect to the device
-				mCommandService.connect(device);
+				commandService.connect(device);
 			}
 			break;
 		case REQUEST_ENABLE_BT:
@@ -128,8 +137,7 @@ public class AndroCopeActivity extends Activity {
 				setupCommand();
 			} else {
 				// User did not enable Bluetooth or an error occured
-				Toast.makeText(this, R.string.bt_not_enabled_leaving,
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
 				finish();
 			}
 		}
@@ -137,7 +145,7 @@ public class AndroCopeActivity extends Activity {
 
 	private void setupCommand() {
 		// Initialize the BluetoothChatService to perform bluetooth connections
-		mCommandService = new BluetoothCommandService(this, mHandler);
+		commandService = new BluetoothCommandService(this, handler);
 	}
 	
 	@Override
@@ -164,26 +172,11 @@ public class AndroCopeActivity extends Activity {
 	}
 
 	private void ensureDiscoverable() {
-		if (mBluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-			Intent discoverableIntent = new Intent(
-					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-			discoverableIntent.putExtra(
-					BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+		if (bluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+			Intent discoverableIntent = new Intent( BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+			discoverableIntent.putExtra( BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
 			startActivity(discoverableIntent);
 		}
-	}
-	
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-			mCommandService.write(BluetoothCommandService.VOL_UP);
-			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-			mCommandService.write(BluetoothCommandService.VOL_DOWN);
-			return true;
-		}
-
-		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override

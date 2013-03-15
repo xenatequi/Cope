@@ -12,21 +12,13 @@ public class ProcessConnectionThread implements Runnable{
 
 	private StreamConnection mConnection;
 	
-	// Constant that indicate command from devices
-	private static final int EXIT_CMD = -1;
-	private static final int KEY_RIGHT = 1;
-	private static final int KEY_LEFT = 2;
-	
-	public ProcessConnectionThread(StreamConnection connection)
-	{
+	public ProcessConnectionThread(StreamConnection connection){
 		mConnection = connection;
 	}
 	
 	@Override
 	public void run() {
 		try {
-			
-			// prepare to receive data
 			InputStream inputStream = mConnection.openInputStream();
 	        ObjectInputStream ois = new ObjectInputStream(inputStream);
 
@@ -34,13 +26,12 @@ public class ProcessConnectionThread implements Runnable{
     	
 			while (true) {
 	        	Mouse command = (Mouse)ois.readObject();
-/*	        	
-	        	if (command == EXIT_CMD)
-	        	{	
+	        	
+	        	if (command.getAction() == Mouse.EXIT_CMD){	
 	        		System.out.println("finish process");
 	        		break;
 	        	}
-*/	        	
+	        	
 	        	processCommand(command);
 	        	
         	}	
@@ -55,32 +46,23 @@ public class ProcessConnectionThread implements Runnable{
 	 */
 	private void processCommand(Mouse command) {
 		try {
-			Robot robot = new Robot();
+			MouseRobot robot = new MouseRobot();
 			
-			//get current mouse location
-			Point point = MouseInfo.getPointerInfo().getLocation();
-			double x = point.getX();
-			double y = point.getY();
-			System.out.println(x + " "+ y);
-	
-			robot.mouseMove((int)x-(int)command.getX(), (int)y-(int)command.getY());
-			
-			
-/*			switch (command) {
-	    	case KEY_RIGHT:
-	    		robot.keyPress(KeyEvent.VK_RIGHT);
-	    		System.out.println("Right");
-	    		// release the key after it is pressed. Otherwise the event just keeps getting trigged	    		
-	    		robot.keyRelease(KeyEvent.VK_RIGHT);
-	    		break;
-	    	case KEY_LEFT:
-	    		robot.keyPress(KeyEvent.VK_LEFT);
-	    		System.out.println("Left");
-	    		// release the key after it is pressed. Otherwise the event just keeps getting trigged	    		
-	    		robot.keyRelease(KeyEvent.VK_LEFT);
-	    		break;
+			switch (command.getAction()) {
+				case Mouse.SCROLL:
+					robot.scroll(command);
+					break;
+				case Mouse.LEFT_CLICK:
+					robot.clickLeft();
+					break;
+				case Mouse.RIGHT_CLICK:
+					robot.clickRight();
+					break;
+				default:
+					break;
 			}
-*/		} catch (Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package tn.insat.androcope;
+package tn.insat.androcope.activity;
 
 import java.util.Set;
 import tn.insat.androcope.R;
+import tn.insat.androcope.R.id;
+import tn.insat.androcope.R.layout;
+import tn.insat.androcope.R.string;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;

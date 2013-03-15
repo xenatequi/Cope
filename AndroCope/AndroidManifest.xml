@@ -7,14 +7,14 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name="tn.insat.androcope.AndroCopeActivity"
+        <activity android:name="tn.insat.androcope.activity.AndroCopeActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DeviceListActivity"
+        <activity android:name="tn.insat.androcope.activity.DeviceListActivity"
                   android:label="@string/select_device"
                   android:theme="@android:style/Theme.Dialog"
                   android:configChanges="orientation|keyboardHidden" />

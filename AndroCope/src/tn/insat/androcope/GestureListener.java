@@ -8,11 +8,11 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import tn.insat.androcope.R;
 
-public class MyGestureListener implements OnGestureListener, OnTouchListener{
+public class GestureListener implements OnGestureListener{
 
 	BluetoothCommandService mCommandService;
 	
-	public MyGestureListener(BluetoothCommandService mCommandService) {
+	public GestureListener(BluetoothCommandService mCommandService) {
 		super();
 		this.mCommandService = mCommandService;
 	}
@@ -54,14 +54,5 @@ public class MyGestureListener implements OnGestureListener, OnTouchListener{
 	public boolean onSingleTapUp(MotionEvent e) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		
-		Mouse command = new Mouse(event.getAction(), (int)event.getX(), (int)event.getY());
-		mCommandService.write(command);
-		Log.d("Scroll", "Tapped at : (" +event.getAction()+ (int)event.getX() + "," + (int)event.getY() + ")");
-		return true;
 	}
 }

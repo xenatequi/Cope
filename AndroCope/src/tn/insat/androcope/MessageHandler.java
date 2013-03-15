@@ -7,7 +7,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import tn.insat.androcope.R;
 
-public class MyHandler extends Handler {
+public class MessageHandler extends Handler {
 
 	// Message types sent from the BluetoothChatService Handler
 	public static final int MESSAGE_STATE_CHANGE = 1;
@@ -27,7 +27,7 @@ public class MyHandler extends Handler {
 	private Context mApplicationContext;
 	
 	
-	public MyHandler(TextView title, Context context){
+	public MessageHandler(TextView title, Context context){
 		mTitle = title;
 		mApplicationContext = context;
 	}
