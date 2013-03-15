@@ -60,7 +60,7 @@ public class ConnectThread extends Thread {
                 Log.e(TAG, "unable to close() socket during connection failure", e2);
             }
             // Start the service over to restart listening mode
-            this.start();
+            commandService.getConnectThread().start();             // TO DO !! when connecting to unavailable device
             return;
         }
 
