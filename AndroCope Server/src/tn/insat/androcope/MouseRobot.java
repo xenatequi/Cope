@@ -36,8 +36,9 @@ public class MouseRobot {
 	}
 	
 	public void clickRight(){
-		robot.mousePress(InputEvent.BUTTON2_MASK);
-		robot.mouseRelease(InputEvent.BUTTON2_MASK);
+		System.out.println("click riiiiiiiiiiiiiiight ");
+		robot.mousePress(InputEvent.BUTTON3_MASK);
+		robot.mouseRelease(InputEvent.BUTTON3_MASK);
 	}
 	
 	public void paste(Mouse mouse){

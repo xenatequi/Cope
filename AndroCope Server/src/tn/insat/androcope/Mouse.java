@@ -10,6 +10,7 @@ public class Mouse implements Serializable {
 	public static final int LEFT_CLICK = 2;
 	public static final int ACTION_COPY = 3;
 	public static final int ACTION_PASTE = 4;
+	
 	public static final int EXIT_CMD = -1;
 	
 	int action;
