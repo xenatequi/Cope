@@ -19,7 +19,7 @@ public class TransmissionThread extends Thread {
 	private static final String TAG = "ConnectedThread";
     private final BluetoothSocket socket;
     BluetoothCommandService commandService;
-    private final InputStream inStream;
+    private final ObjectInputStream inStream;
     private final ObjectOutputStream outStream;
 
     public TransmissionThread(BluetoothSocket socket, BluetoothCommandService commandService) {
@@ -28,22 +28,21 @@ public class TransmissionThread extends Thread {
         this.commandService = commandService;
         ObjectInputStream tmpIn = null;
         ObjectOutputStream tmpOut = null;
-        InputStream is=null;
-        // Get the BluetoothSocket input and output streams
+
         try {
-        	is = socket.getInputStream();
+        	InputStream is = socket.getInputStream();
         	OutputStream os = socket.getOutputStream();
         	Log.e(TAG, "simple stream");//////////////////////////////////////////////////
             tmpOut = new ObjectOutputStream(os);
             tmpOut.flush();
             Log.e(TAG, "object stream");//////////////////////////////////////////////////
-       //     tmpIn = new ObjectInputStream(is);
+            tmpIn = new ObjectInputStream(is);
             
         } catch (IOException e) {
             Log.e(TAG, "temp sockets not created", e);
         }
         Log.e(TAG, "el streamet t3amlou");//////////////////////////////////////////////////
-        inStream = is;
+        inStream = tmpIn;
         outStream = tmpOut;
     }
 
