@@ -32,36 +32,41 @@ public class TransmissionThread extends Thread {
         try {
         	InputStream is = socket.getInputStream();
         	OutputStream os = socket.getOutputStream();
-        	Log.e(TAG, "simple stream");//////////////////////////////////////////////////
             tmpOut = new ObjectOutputStream(os);
             tmpOut.flush();
-            Log.e(TAG, "object stream");//////////////////////////////////////////////////
             tmpIn = new ObjectInputStream(is);
             
         } catch (IOException e) {
             Log.e(TAG, "temp sockets not created", e);
         }
-        Log.e(TAG, "el streamet t3amlou");//////////////////////////////////////////////////
+
         inStream = tmpIn;
         outStream = tmpOut;
     }
 
     public void run() {
         Log.i(TAG, "BEGIN mConnectedThread");
-        byte[] buffer = new byte[1024];
         
-        // Keep listening to the InputStream while connected
+        commandService.write(new Mouse(Mouse.ACTION_PASTE, Mouse.CLIPBOARD));
+        
         while (true) {
             try {
-            	// Read from the InputStream
-                int bytes = inStream.read();
-
-                // Send the obtained bytes to the UI Activity
-                commandService.getHandler().obtainMessage(MessageHandler.MESSAGE_READ, bytes, -1, buffer)
-                        .sendToTarget();
+                Mouse mouse = (Mouse)inStream.readObject();
+                Mouse.CLIPBOARD = mouse.getClipboard();
+                
+                Message msg = commandService.getHandler().obtainMessage(MessageHandler.MESSAGE_TOAST);
+                Bundle bundle = new Bundle();
+                bundle.putString(MessageHandler.TOAST, "Data copied to clipboard");
+                msg.setData(bundle);
+                commandService.getHandler().sendMessage(msg);
+                
+                Log.e(TAG, Mouse.CLIPBOARD);
             } catch (IOException e) {
                 Log.e(TAG, "disconnected", e);
                 connectionLost();
+                break;
+            } catch (ClassNotFoundException e) {
+                Log.e(TAG, "class not found", e);
                 break;
             }
         }
