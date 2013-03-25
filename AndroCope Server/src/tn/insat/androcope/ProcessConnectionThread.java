@@ -70,8 +70,8 @@ public class ProcessConnectionThread implements Runnable{
 				case Mouse.LEFT_CLICK:
 					robot.clickLeft();
 					break;
-				case Mouse.ACTION_COPY:
-					
+				case Mouse.ACTION_PASTE:
+					robot.paste(command);
 					break;
 				case Mouse.RIGHT_CLICK:
 					robot.clickRight();

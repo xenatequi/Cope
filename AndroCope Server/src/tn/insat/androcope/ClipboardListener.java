@@ -14,12 +14,12 @@ public class ClipboardListener implements FlavorListener{
 	
 	Transferable contents ;
 	ObjectOutputStream output;
-	
+	String result;
 	public ClipboardListener(ObjectOutputStream output) {
 		this.output = output;
 	}
 
-	String result;
+	
 
 	@Override
 	public void flavorsChanged(FlavorEvent arg0) {
@@ -32,6 +32,8 @@ public class ClipboardListener implements FlavorListener{
 			System.out.println("resultat "+result);
 			Mouse mouse = new Mouse(Mouse.ACTION_COPY,result);
 			output.writeObject(mouse);
+			
+			
 			
 		} catch (UnsupportedFlavorException e) {
 			// TODO Auto-generated catch block

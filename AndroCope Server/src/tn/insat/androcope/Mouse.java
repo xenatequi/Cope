@@ -24,6 +24,16 @@ public class Mouse implements Serializable {
 	}
 	
 
+	public String getClipboard() {
+		return clipboard;
+	}
+
+
+	public void setClipboard(String clipboard) {
+		this.clipboard = clipboard;
+	}
+
+
 	public Mouse(int action,String clipboard) {
 		this.clipboard = clipboard;
 		this.action=action;
