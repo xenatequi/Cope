@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Mouse implements Serializable {
 
+	private static final long serialVersionUID = -1247827936977116858L;
 	public static final int SCROLL = 0;
 	public static final int RIGHT_CLICK = 1;
 	public static final int LEFT_CLICK = 2;
@@ -26,16 +27,6 @@ public class Mouse implements Serializable {
 	public Mouse(int action,String clipboard) {
 		this.clipboard = clipboard;
 		this.action=action;
-	}
-
-
-	public String getClipboard() {
-		return clipboard;
-	}
-
-
-	public void setClipboard(String clipboard) {
-		this.clipboard = clipboard;
 	}
 
 

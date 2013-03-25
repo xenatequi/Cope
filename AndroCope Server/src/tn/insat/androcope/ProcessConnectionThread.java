@@ -3,6 +3,9 @@ package tn.insat.androcope;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,6 +16,7 @@ import javax.microedition.io.StreamConnection;
 public class ProcessConnectionThread implements Runnable{
 
 	private StreamConnection mConnection;
+	ClipboardListener clip;
 	
 	public ProcessConnectionThread(StreamConnection connection){
 		mConnection = connection;
@@ -26,8 +30,14 @@ public class ProcessConnectionThread implements Runnable{
 	        OutputStream outputStream = mConnection.openOutputStream();
 	        ObjectOutputStream ouis = new ObjectOutputStream(outputStream);
 	        ouis.flush();
+	        
+	        clip = new ClipboardListener(ouis);
+	        final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.addFlavorListener(clip);
 
 			System.out.println("waiting for input");
+		
+			       
     	
 			while (true) {
 	        	Mouse command = (Mouse)ois.readObject();

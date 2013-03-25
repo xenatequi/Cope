@@ -18,9 +18,7 @@ public class WaitThread implements Runnable{
 
 	/** Constructor */
 	public WaitThread() {
-		final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		clipboardListener = new ClipboardListener();
-		clipboard.addFlavorListener(clipboardListener);
+		
 	}
 	
 	@Override
