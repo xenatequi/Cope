@@ -5,6 +5,8 @@ import java.awt.Point;
 import java.awt.Robot;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 import javax.microedition.io.StreamConnection;
 
@@ -21,6 +23,9 @@ public class ProcessConnectionThread implements Runnable{
 		try {
 			InputStream inputStream = mConnection.openInputStream();
 	        ObjectInputStream ois = new ObjectInputStream(inputStream);
+	        OutputStream outputStream = mConnection.openOutputStream();
+	        ObjectOutputStream ouis = new ObjectOutputStream(outputStream);
+	        ouis.flush();
 
 			System.out.println("waiting for input");
     	
