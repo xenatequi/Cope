@@ -5,11 +5,9 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Robot;
 import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 
 public class MouseRobot {
 
@@ -36,15 +34,13 @@ public class MouseRobot {
 	}
 	
 	public void clickRight(){
-		System.out.println("click riiiiiiiiiiiiiiight ");
 		robot.mousePress(InputEvent.BUTTON3_MASK);
 		robot.mouseRelease(InputEvent.BUTTON3_MASK);
 	}
 	
 	public void paste(Mouse mouse){
-		
 		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(mouse.getClipboard()),null);
-		System.out.println("jetniiii "+mouse.getClipboard());
+		System.out.println("Clipboard : "+ mouse.getClipboard()); //////////////////////////////////////
 		
 	}
 }

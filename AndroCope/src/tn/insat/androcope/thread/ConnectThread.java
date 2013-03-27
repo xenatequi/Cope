@@ -27,14 +27,12 @@ public class ConnectThread extends Thread {
         this.commandService = commandService;
         this.handler = handler;
         this.adapter = BluetoothAdapter.getDefaultAdapter();
+        
         BluetoothSocket tmp = null;
-
-        // Get a BluetoothSocket for a connection with the
-        // given BluetoothDevice
         try {
             tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
         } catch (IOException e) {
-            Log.e(TAG, "create() failed", e);
+            Log.e(TAG, "create() failed", e); ////////////////////////////////////////////////////
         }
         socket = tmp;
     }
@@ -48,8 +46,6 @@ public class ConnectThread extends Thread {
 
         // Make a connection to the BluetoothSocket
         try {
-            // This is a blocking call and will only return on a
-            // successful connection or an exception
             socket.connect();
         } catch (IOException e) {
             connectionFailed();
@@ -57,7 +53,7 @@ public class ConnectThread extends Thread {
             try {
                 socket.close();
             } catch (IOException e2) {
-                Log.e(TAG, "unable to close() socket during connection failure", e2);
+                Log.e(TAG, "unable to close() socket during connection failure", e2); //////////////////////////////
             }
             // Start the service over to restart listening mode
             commandService.start(); 

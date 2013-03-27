@@ -15,32 +15,26 @@ import javax.microedition.io.StreamConnection;
 
 public class ProcessConnectionThread implements Runnable{
 
-	private StreamConnection mConnection;
-	ClipboardListener clip;
+	private StreamConnection connection;
+	private ClipboardListener clipboardListener;
+	private ObjectInputStream inputStream;
+	private ObjectOutputStream outputStream;
 	
 	public ProcessConnectionThread(StreamConnection connection){
-		mConnection = connection;
+		this.connection = connection;
 	}
 	
 	@Override
 	public void run() {
 		try {
-			InputStream inputStream = mConnection.openInputStream();
-	        ObjectInputStream ois = new ObjectInputStream(inputStream);
-	        OutputStream outputStream = mConnection.openOutputStream();
-	        ObjectOutputStream ouis = new ObjectOutputStream(outputStream);
-	        ouis.flush();
-	        
-	        clip = new ClipboardListener(ouis);
-	        final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-			clipboard.addFlavorListener(clip);
+			
+			initObjectStreams();
+	        initClipboard();
 
-			System.out.println("waiting for input");
-		
-			       
-    	
+			System.out.println("Waiting for input");
+	
 			while (true) {
-	        	Mouse command = (Mouse)ois.readObject();
+	        	Mouse command = (Mouse)inputStream.readObject();
 	        	
 	        	if (command.getAction() == Mouse.EXIT_CMD){	
 	        		System.out.println("finish process");
@@ -48,17 +42,27 @@ public class ProcessConnectionThread implements Runnable{
 	        	}
 	        	
 	        	processCommand(command);
-	        	
         	}	
         } catch (Exception e) {
     		e.printStackTrace();
     	}
 	}
 	
-	/**
-	 * Process the command from client
-	 * @param command the command code
-	 */
+	private void initClipboard() {
+		clipboardListener = new ClipboardListener(outputStream);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		clipboard.addFlavorListener(clipboardListener);
+	}
+
+	private void initObjectStreams() {
+		InputStream is = connection.openInputStream();
+		OutputStream os = connection.openOutputStream();
+		
+        inputStream = new ObjectInputStream(is);
+        outputStream = new ObjectOutputStream(os);
+        outputStream.flush();	
+	}
+
 	private void processCommand(Mouse command) {
 		try {
 			MouseRobot robot = new MouseRobot();
