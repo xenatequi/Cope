@@ -21,15 +21,15 @@ public class MessageHandler extends Handler {
 	public static final String TOAST = "toast";
 	
 	// Layout view
-	private TextView mTitle;
+	private TextView title;
 	// Name of the connected device
-	private String mConnectedDeviceName = null;
-	private Context mApplicationContext;
+	private String connectedDeviceName = null;
+	private Context applicationContext;
 	
 	
 	public MessageHandler(TextView title, Context context){
-		mTitle = title;
-		mApplicationContext = context;
+		this.title = title;
+		this.applicationContext = context;
 	}
 	
 	@Override
@@ -38,27 +38,27 @@ public class MessageHandler extends Handler {
 		case MESSAGE_STATE_CHANGE:
 			switch (msg.arg1) {
 			case BluetoothCommandService.STATE_CONNECTED:
-				mTitle.setText(R.string.title_connected_to);
-				mTitle.append(mConnectedDeviceName);
+				title.setText(R.string.title_connected_to);
+				title.append(connectedDeviceName);
 				break;
 			case BluetoothCommandService.STATE_CONNECTING:
-				mTitle.setText(R.string.title_connecting);
+				title.setText(R.string.title_connecting);
 				break;
 			case BluetoothCommandService.STATE_LISTEN:
 			case BluetoothCommandService.STATE_NONE:
-				mTitle.setText(R.string.title_not_connected);
+				title.setText(R.string.title_not_connected);
 				break;
 			}
 			break;
 		case MESSAGE_DEVICE_NAME:
 			// save the connected device's name
-			mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-			Toast.makeText(mApplicationContext,
-					"Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT)
+			connectedDeviceName = msg.getData().getString(DEVICE_NAME);
+			Toast.makeText(applicationContext,
+					"Connected to " + connectedDeviceName, Toast.LENGTH_SHORT)
 					.show();
 			break;
 		case MESSAGE_TOAST:
-			Toast.makeText(mApplicationContext,
+			Toast.makeText(applicationContext,
 					msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
 			break;
 		}

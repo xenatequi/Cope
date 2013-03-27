@@ -1,4 +1,4 @@
-package tn.insat.androcope;
+package tn.insat.androcope.thread;
 
 import java.io.IOException;
 import javax.bluetooth.BluetoothStateException;
@@ -10,7 +10,9 @@ import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 
 public class WaitThread implements Runnable{
-		
+	
+	private static String MY_UUID = "04c6093b00001000800000805f9b34fb";
+	
 	@Override
 	public void run() {
 		waitForConnection();		
@@ -18,18 +20,17 @@ public class WaitThread implements Runnable{
 	
 	private void waitForConnection() {
 
-		LocalDevice local = null;
+		LocalDevice localDevice = null;
 		
 		StreamConnectionNotifier notifier;
 		StreamConnection connection = null;
 		
-
 		try {
-			local = LocalDevice.getLocalDevice();
-			local.setDiscoverable(DiscoveryAgent.GIAC);
+			localDevice = LocalDevice.getLocalDevice();
+			localDevice.setDiscoverable(DiscoveryAgent.GIAC);
 			
-			UUID uuid = new UUID("04c6093b00001000800000805f9b34fb", false);
-			System.out.println(uuid.toString());
+			UUID uuid = new UUID( MY_UUID, false);
+			System.out.println("UUID : " + uuid.toString());
 			
             String url = "btspp://localhost:" + uuid.toString() + ";name=RemoteBluetooth";
             notifier = (StreamConnectionNotifier)Connector.open(url);
@@ -38,6 +39,7 @@ public class WaitThread implements Runnable{
 			e.printStackTrace();
 			return;
 		} catch (IOException e) {
+			System.out.println("Cannot read from Bluetooth.");
 			e.printStackTrace();
 			return;
 		}
@@ -50,7 +52,8 @@ public class WaitThread implements Runnable{
 	            Thread processThread = new Thread(new ProcessConnectionThread(connection));
 	            processThread.start();
 	            
-			} catch (Exception e) {
+			} catch (IOException e) {
+				System.out.println("Problem occured while accepting an external connection...");
 				e.printStackTrace();
 				return;
 			}

@@ -1,12 +1,11 @@
 package tn.insat.androcope;
 
 import java.io.Serializable;
-import tn.insat.androcope.R;
 
 public class Mouse implements Serializable {
 
 	private static final long serialVersionUID = -1247827936977116858L;
-	public static String CLIPBOARD = "null";
+	public static String CLIPBOARD = "";
 	
 	public static final int SCROLL = 0;
 	public static final int RIGHT_CLICK = 1;

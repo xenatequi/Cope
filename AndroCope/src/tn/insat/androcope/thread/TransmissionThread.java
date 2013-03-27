@@ -16,14 +16,15 @@ import android.os.Message;
 import android.util.Log;
 
 public class TransmissionThread extends Thread {
-	private static final String TAG = "ConnectedThread";
+	private static final String TAG = "TransmissionThread";
     private final BluetoothSocket socket;
-    BluetoothCommandService commandService;
-    private final ObjectInputStream inStream;
-    private final ObjectOutputStream outStream;
+    private final ObjectInputStream inputStream;
+    private final ObjectOutputStream outputStream;
+    
+    private BluetoothCommandService commandService;
 
     public TransmissionThread(BluetoothSocket socket, BluetoothCommandService commandService) {
-        Log.d(TAG, "create ConnectedThread");
+        Log.d(TAG, "create TransmissionThread");
         this.socket = socket;
         this.commandService = commandService;
         ObjectInputStream tmpIn = null;
@@ -37,21 +38,22 @@ public class TransmissionThread extends Thread {
             tmpIn = new ObjectInputStream(is);
             
         } catch (IOException e) {
-            Log.e(TAG, "temp sockets not created", e);
+            Log.e(TAG, "Temp sockets not created", e);
         }
 
-        inStream = tmpIn;
-        outStream = tmpOut;
+        inputStream = tmpIn;
+        outputStream = tmpOut;
     }
 
     public void run() {
-        Log.i(TAG, "BEGIN mConnectedThread");
+        Log.i(TAG, "BEGIN transmissionThread");
         
-        commandService.write(new Mouse(Mouse.ACTION_PASTE, Mouse.CLIPBOARD));
+        if(Mouse.CLIPBOARD != "")
+        	commandService.write(new Mouse(Mouse.ACTION_PASTE, Mouse.CLIPBOARD));
         
         while (true) {
             try {
-                Mouse mouse = (Mouse)inStream.readObject();
+                Mouse mouse = (Mouse)inputStream.readObject();
                 Mouse.CLIPBOARD = mouse.getClipboard();
                 
                 Message msg = commandService.getHandler().obtainMessage(MessageHandler.MESSAGE_TOAST);
@@ -74,22 +76,17 @@ public class TransmissionThread extends Thread {
 
     private void connectionLost() {
     	commandService.setState(commandService.STATE_LISTEN);
-        // Send a failure message back to the Activity
+    	
         Message msg = commandService.getHandler().obtainMessage(MessageHandler.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
         bundle.putString(MessageHandler.TOAST, "Device connection was lost");
         msg.setData(bundle);
         commandService.getHandler().sendMessage(msg);
     }
-    
-    /**
-     * Write to the connected OutStream.
-     * @param buffer  The bytes to write
-     */
-    
+        
     public void write(Mouse mouse) {
         try {
-            outStream.writeObject(mouse);
+            outputStream.writeObject(mouse);
         } catch (IOException e) {
             Log.e(TAG, "Exception during write", e);
         }
@@ -97,7 +94,7 @@ public class TransmissionThread extends Thread {
 
     public void cancel() {
         try {
-        	outStream.writeObject(new Mouse(Mouse.EXIT_CMD,0,0));
+        	outputStream.writeObject(new Mouse(Mouse.EXIT_CMD,0,0));
             socket.close();
         } catch (IOException e) {
             Log.e(TAG, "close() of connect socket failed", e);

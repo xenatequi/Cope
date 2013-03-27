@@ -1,8 +1,5 @@
-package tn.insat.androcope;
+package tn.insat.androcope.thread;
 
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.io.IOException;
@@ -12,6 +9,10 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 import javax.microedition.io.StreamConnection;
+
+import tn.insat.androcope.ClipboardListener;
+import tn.insat.androcope.Mouse;
+import tn.insat.androcope.MouseRobot;
 
 public class ProcessConnectionThread implements Runnable{
 
@@ -37,7 +38,7 @@ public class ProcessConnectionThread implements Runnable{
 	        	Mouse command = (Mouse)inputStream.readObject();
 	        	
 	        	if (command.getAction() == Mouse.EXIT_CMD){	
-	        		System.out.println("finish process");
+	        		System.out.println("Finish process");
 	        		break;
 	        	}
 	        	
@@ -58,13 +59,13 @@ public class ProcessConnectionThread implements Runnable{
 		InputStream is;
 		OutputStream os;
 		try {
-		is = connection.openInputStream();
-		os = connection.openOutputStream();
-        inputStream = new ObjectInputStream(is);
-        outputStream = new ObjectOutputStream(os);
-        outputStream.flush();
+			is = connection.openInputStream();
+			os = connection.openOutputStream();
+	        inputStream = new ObjectInputStream(is);
+	        outputStream = new ObjectOutputStream(os);
+	        outputStream.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Problem occured while establishing a connection");
 			e.printStackTrace();
 		}
 	}

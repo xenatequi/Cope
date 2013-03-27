@@ -13,14 +13,15 @@ import android.os.Message;
 import android.util.Log;
 
 public class ConnectThread extends Thread {
-	private static final String TAG = "ConnectedThread";
+	private static final String TAG = "ConnectThread";
 	private static final UUID MY_UUID = UUID.fromString("04c6093b-0000-1000-8000-00805f9b34fb");
 	
-	BluetoothCommandService commandService;
-	Handler handler;
+	private final Handler handler;
 	private final BluetoothAdapter adapter;
     private final BluetoothSocket socket;
     private final BluetoothDevice device;
+    
+    private BluetoothCommandService commandService;
 
     public ConnectThread(BluetoothDevice device, BluetoothCommandService commandService, Handler handler) {
         this.device = device;
@@ -38,7 +39,7 @@ public class ConnectThread extends Thread {
     }
 
     public void run() {
-        Log.i(TAG, "BEGIN mConnectThread");
+        Log.i(TAG, "BEGIN connectThread");
         setName("ConnectThread");
 
         // Always cancel discovery because it will slow down a connection
@@ -49,7 +50,6 @@ public class ConnectThread extends Thread {
             socket.connect();
         } catch (IOException e) {
             connectionFailed();
-            // Close the socket
             try {
                 socket.close();
             } catch (IOException e2) {
