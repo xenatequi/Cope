@@ -4,12 +4,17 @@ import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 public class MouseRobot {
 
 	Robot robot;
+	Transferable contents ;
 	
 	public MouseRobot () throws AWTException{
 		robot = new Robot();
@@ -31,8 +36,15 @@ public class MouseRobot {
 	}
 	
 	public void clickRight(){
-		robot.mousePress(InputEvent.BUTTON2_MASK);
-		robot.mouseRelease(InputEvent.BUTTON2_MASK);
+		System.out.println("click riiiiiiiiiiiiiiight ");
+		robot.mousePress(InputEvent.BUTTON3_MASK);
+		robot.mouseRelease(InputEvent.BUTTON3_MASK);
 	}
 	
+	public void paste(Mouse mouse){
+		
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(mouse.getClipboard()),null);
+		System.out.println("jetniiii "+mouse.getClipboard());
+		
+	}
 }

@@ -1,5 +1,7 @@
 package tn.insat.androcope;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 import java.io.IOException;
 
 import javax.bluetooth.BluetoothStateException;
@@ -11,9 +13,12 @@ import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 
 public class WaitThread implements Runnable{
+	
+	ClipboardListener clipboardListener;
 
 	/** Constructor */
 	public WaitThread() {
+		
 	}
 	
 	@Override
