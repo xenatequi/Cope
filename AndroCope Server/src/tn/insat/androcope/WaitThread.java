@@ -1,9 +1,6 @@
 package tn.insat.androcope;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
 import java.io.IOException;
-
 import javax.bluetooth.BluetoothStateException;
 import javax.bluetooth.DiscoveryAgent;
 import javax.bluetooth.LocalDevice;
@@ -13,28 +10,20 @@ import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 
 public class WaitThread implements Runnable{
-	
-	ClipboardListener clipboardListener;
-
-	/** Constructor */
-	public WaitThread() {
 		
-	}
-	
 	@Override
 	public void run() {
 		waitForConnection();		
 	}
 	
-	/** Waiting for connection from devices */
 	private void waitForConnection() {
-		// retrieve the local Bluetooth device object
+
 		LocalDevice local = null;
 		
 		StreamConnectionNotifier notifier;
 		StreamConnection connection = null;
 		
-		// setup the server to listen for connection
+
 		try {
 			local = LocalDevice.getLocalDevice();
 			local.setDiscoverable(DiscoveryAgent.GIAC);
@@ -53,10 +42,9 @@ public class WaitThread implements Runnable{
 			return;
 		}
 		
-		// waiting for connection
 		while(true) {
 			try {
-				System.out.println("waiting for connection...");
+				System.out.println("Waiting for connection...");
 	            connection = notifier.acceptAndOpen();
 	            
 	            Thread processThread = new Thread(new ProcessConnectionThread(connection));
