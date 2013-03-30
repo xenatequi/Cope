@@ -2,7 +2,6 @@ package tn.insat.androcope;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -19,97 +18,91 @@ public class MainWindow extends JFrame implements ActionListener {
 
 	private static String ICON_START = "./image/start.png";
 	private static String ICON_STOP  = "./image/stop.png";
-	public int i;
+	private static String TITLE  = "Cope Server";
 
-	private JPanel panelButton = new JPanel();
-	private JPanel panelLabel = new JPanel();
+	private static int MESSAGE_INFO  = 1;
+	private static int MESSAGE_ERROR  = 2;
+	
+	private JPanel buttonPanel = new JPanel();
+	private JPanel messagePanel = new JPanel();
 	private ImageIcon iconStart = null;
 	private ImageIcon iconStop = null;
 	private JButton start = null;
 	private JButton stop = null;
-	private JLabel label = new JLabel();
-	WaitThread waitThread = new WaitThread();
-	MyWindowListener windowsListener = new MyWindowListener();
+	private JLabel message = new JLabel();
+	private WaitThread waitThread = new WaitThread();
 
 	public MainWindow()  {
-		this.initVariables();
-		this.initButtons();
+		this.initMessagePanel();
+		this.initButtonPanel();
 		this.initWindowProperties();
-
-
 	}
 
-	public void initVariables() {
-
-		panelLabel.add(label);
-		panelLabel.setBackground(Color.BLACK);
-		this.add(panelLabel, BorderLayout.NORTH);
+	private void initMessagePanel() {
+		message.setFont(new Font(Font.SANS_SERIF,Font.BOLD,14));
+		message.setForeground(Color.BLUE);
+		
+		messagePanel.add(message);
+		messagePanel.setOpaque(false);
+		this.add(messagePanel, BorderLayout.NORTH);
 	}
 
-	public void initButtons() {
+	private void initButtonPanel() {
 		iconStart = new ImageIcon((ICON_START));
 		iconStop = new ImageIcon((ICON_STOP));
 		start = new JButton(iconStart);
 		stop = new JButton(iconStop);
-
-		// Making a transparent button having only the icon
-		start.setBorderPainted(false);
-		start.setFocusPainted(false);
-		start.setContentAreaFilled(false);
-
-		stop.setBorderPainted(false);
-		stop.setFocusPainted(false);
-		stop.setContentAreaFilled(false);
-
-		// Ajout des actions boutons
 		start.addActionListener(this);
 		stop.addActionListener(this);
 
-		// ajouter les composants aux conteneurs
-		panelButton.add(start);
-		panelButton.add(stop);
+		setTransparentButton(start);
+		setTransparentButton(stop);
 
-		// Black Background
-		panelButton.setBackground(Color.BLACK);
-		this.add(panelButton, BorderLayout.SOUTH);
+		buttonPanel.add(start);
+		buttonPanel.add(stop);
+
+		buttonPanel.setOpaque(false);
+		this.add(buttonPanel, BorderLayout.SOUTH);
 
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
-		if (e.getSource() == start) {
-			i=i+1;
-			if (!(waitThread.isAlive())) {
-				label.setText("Server is waiting for connection");
-				label.setFont(new Font(Font.SANS_SERIF,Font.BOLD,14));
-				label.setForeground(Color.BLUE);
-				
-				waitThread.start();
-			} else {
-				label.setText("Server already started");
-				label.setFont(new Font(Font.SANS_SERIF,Font.BOLD,14));
-				label.setForeground(Color.RED);
-			}
-		}
-		if (e.getSource() == stop) {
-			waitThread.setStop(true);
-			System.out.println("stopppppppppp");
-		}
+	private void setTransparentButton(JButton button) {
+		button.setBorderPainted(false);
+		button.setFocusPainted(false);
+		button.setContentAreaFilled(false);
 	}
-
-	// ============================= WINDOW ========================
 
 	private void initWindowProperties() {
-		Container contenu = this.getContentPane();
-		contenu.setBackground(Color.BLACK);
-		setTitle("Cope Project");
-		this.addWindowListener(windowsListener);
-		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setLocation(380, 190);
-		setMinimumSize(new Dimension(300, 400));
-		setVisible(true);
+		this.getContentPane().setBackground(Color.BLACK);
+		this.setLocation(380, 190);
+		this.setMinimumSize(new Dimension(400,200));
+		this.setTitle(TITLE);
+		
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
 	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+		if (e.getSource() == start) {
+			if (!(waitThread.isAlive())) {
+				waitThread.start();
+				setMessage("Server is waiting for connection", this.MESSAGE_INFO);
+			}else{
+				waitThread = new WaitThread();
+				waitThread.start();
+			}
+		}
+		else if (e.getSource() == stop) {
+			waitThread.setRunning(true);
+			setMessage("Server stopped", this.MESSAGE_INFO);
+		}
+	}
+	
+	public void setMessage(String message, int type) {
+		this.message.setText(message);
+	}
+
 
 }

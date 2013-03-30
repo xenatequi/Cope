@@ -12,27 +12,20 @@ import javax.microedition.io.StreamConnectionNotifier;
 public class WaitThread extends Thread{
 	
 	private static String MY_UUID = "04c6093b00001000800000805f9b34fb";
-	 ProcessConnectionThread processThread;
-	/** Ce boolean sera utilisé pour signaler au 
-	 * processus s'il doit continuer ou s'arrêter.
-	 */
-	private boolean stopThread ;
+	private boolean running ;
+	private ProcessConnectionThread processThread;
+	
 	@Override
 	public void run() {
-		
-		  while( !stopThread ) {
-			  			
-	                	   waitForConnection();   
-	        } 
+		while( running ) {
+			waitForConnection();   
+	    } 
 	} 
-	 
-	public  void setStop(boolean b) {
-			        this.stopThread = b;
-		
+	
+	public void setRunning(boolean running) {
+		this.running = running;
 	} 
 			
-	
-	
 	private void waitForConnection() {
 
 		LocalDevice localDevice = null;
