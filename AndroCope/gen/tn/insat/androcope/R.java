@@ -34,7 +34,7 @@ public final class R {
         public static final int button_scan=0x7f080006;
         public static final int discoverable=0x7f08000b;
         public static final int layout=0x7f080007;
-        public static final int lin_lay=0x7f080008;
+        public static final int linear_layout=0x7f080008;
         public static final int logo=0x7f080009;
         public static final int new_devices=0x7f080005;
         public static final int paired_devices=0x7f080003;

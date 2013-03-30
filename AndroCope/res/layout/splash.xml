@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     android:background="@drawable/radialback"
     android:layout_gravity="center"
-     android:id="@+id/lin_lay"
+    android:id="@+id/linear_layout"
     android:gravity="center"
     android:orientation="vertical" >
 
