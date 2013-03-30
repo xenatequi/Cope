@@ -5,78 +5,52 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.Label;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.rmi.Naming;
-import java.rmi.RMISecurityManager;
-import java.rmi.Remote;
-import java.util.Random;
-
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import tn.insat.androcope.thread.WaitThread;
 
-public class Fenetre extends JFrame implements ActionListener {
+public class MainWindow extends JFrame implements ActionListener {
 
+	private static String ICON_START = "./image/start.png";
+	private static String ICON_STOP  = "./image/stop.png";
 	public int i;
 
-	private JPanel panel_bouton = null;
-	private JPanel panel_label = null;
-	ImageIcon icon_start = null;
-	ImageIcon icon_stop = null;
+	private JPanel panelButton = new JPanel();
+	private JPanel panelLabel = new JPanel();
+	private ImageIcon iconStart = null;
+	private ImageIcon iconStop = null;
 	private JButton start = null;
 	private JButton stop = null;
-	private JLabel label = null;
-	WaitThread waitThread = null;
-	MyWindowListener x = new MyWindowListener();
+	private JLabel label = new JLabel();
+	WaitThread waitThread = new WaitThread();
+	MyWindowListener windowsListener = new MyWindowListener();
 
-	public Fenetre()  {
-
-		this.init_Var();
-		this.initBoutons();
+	public MainWindow()  {
+		this.initVariables();
+		this.initButtons();
 		this.initWindowProperties();
 
 
 	}
 
-	public void init_Var() {
+	public void initVariables() {
 
-		panel_label = new JPanel();
-		label = new JLabel();
-		// ajouter les composants aux conteneurs
-		panel_label.add(label);
-
-		// Black Background
-		panel_label.setBackground(Color.BLACK);
-
-		this.add(panel_label, BorderLayout.NORTH);
-
-		waitThread = new WaitThread();
-
+		panelLabel.add(label);
+		panelLabel.setBackground(Color.BLACK);
+		this.add(panelLabel, BorderLayout.NORTH);
 	}
 
-	public void initBoutons() {
-
-		panel_bouton = new JPanel();
-
-		icon_start = new ImageIcon(("./image/start.png"));
-		icon_stop = new ImageIcon(("./image/stop.png"));
-		start = new JButton(icon_start);
-		stop = new JButton(icon_stop);
+	public void initButtons() {
+		iconStart = new ImageIcon((ICON_START));
+		iconStop = new ImageIcon((ICON_STOP));
+		start = new JButton(iconStart);
+		stop = new JButton(iconStop);
 
 		// Making a transparent button having only the icon
 		start.setBorderPainted(false);
@@ -92,12 +66,12 @@ public class Fenetre extends JFrame implements ActionListener {
 		stop.addActionListener(this);
 
 		// ajouter les composants aux conteneurs
-		panel_bouton.add(start);
-		panel_bouton.add(stop);
+		panelButton.add(start);
+		panelButton.add(stop);
 
 		// Black Background
-		panel_bouton.setBackground(Color.BLACK);
-		this.add(panel_bouton, BorderLayout.SOUTH);
+		panelButton.setBackground(Color.BLACK);
+		this.add(panelButton, BorderLayout.SOUTH);
 
 	}
 
@@ -131,7 +105,7 @@ public class Fenetre extends JFrame implements ActionListener {
 		Container contenu = this.getContentPane();
 		contenu.setBackground(Color.BLACK);
 		setTitle("Cope Project");
-		this.addWindowListener(x);
+		this.addWindowListener(windowsListener);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setLocation(380, 190);
 		setMinimumSize(new Dimension(300, 400));
