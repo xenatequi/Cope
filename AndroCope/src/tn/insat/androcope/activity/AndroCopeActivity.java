@@ -33,8 +33,9 @@ public class AndroCopeActivity extends Activity {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		
+		
 		super.onCreate(savedInstanceState);
-
 		initWindow();
 		initStatusTextHandler();
 		initCommandService();

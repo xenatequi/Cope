@@ -9,14 +9,29 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 
-public class WaitThread implements Runnable{
+public class WaitThread extends Thread{
 	
 	private static String MY_UUID = "04c6093b00001000800000805f9b34fb";
-	
+	 ProcessConnectionThread processThread;
+	/** Ce boolean sera utilisé pour signaler au 
+	 * processus s'il doit continuer ou s'arrêter.
+	 */
+	private boolean stopThread ;
 	@Override
 	public void run() {
-		waitForConnection();		
-	}
+		
+		  while( !stopThread ) {
+			  			
+	                	   waitForConnection();   
+	        } 
+	} 
+	 
+	public  void setStop(boolean b) {
+			        this.stopThread = b;
+		
+	} 
+			
+	
 	
 	private void waitForConnection() {
 
@@ -48,8 +63,8 @@ public class WaitThread implements Runnable{
 			try {
 				System.out.println("Waiting for connection...");
 	            connection = notifier.acceptAndOpen();
-	            
-	            Thread processThread = new Thread(new ProcessConnectionThread(connection));
+	           
+	            processThread = new ProcessConnectionThread(connection);
 	            processThread.start();
 	            
 			} catch (IOException e) {

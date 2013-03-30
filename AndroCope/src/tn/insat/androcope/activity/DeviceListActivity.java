@@ -56,6 +56,7 @@ public class DeviceListActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+    	
         super.onCreate(savedInstanceState);
 
         // Setup the window

@@ -14,12 +14,13 @@ import tn.insat.androcope.ClipboardListener;
 import tn.insat.androcope.Mouse;
 import tn.insat.androcope.MouseRobot;
 
-public class ProcessConnectionThread implements Runnable{
+public class ProcessConnectionThread extends Thread{
 
 	private StreamConnection connection;
 	private ClipboardListener clipboardListener;
 	private ObjectInputStream inputStream;
 	private ObjectOutputStream outputStream;
+	private boolean stopThread = false;
 	
 	public ProcessConnectionThread(StreamConnection connection){
 		this.connection = connection;
@@ -27,6 +28,7 @@ public class ProcessConnectionThread implements Runnable{
 	
 	@Override
 	public void run() {
+		while( !stopThread ) {
 		try {
 			
 			initObjectStreams();
@@ -47,7 +49,14 @@ public class ProcessConnectionThread implements Runnable{
         } catch (Exception e) {
     		e.printStackTrace();
     	}
+		}
+		
+		
 	}
+	
+	public  void setStop() {
+        this.stopThread = true;
+} 
 	
 	private void initClipboard() {
 		clipboardListener = new ClipboardListener(outputStream);
