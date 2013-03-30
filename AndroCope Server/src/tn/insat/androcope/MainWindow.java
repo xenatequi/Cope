@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
@@ -77,7 +78,7 @@ public class MainWindow extends JFrame implements ActionListener {
 		this.setLocation(380, 190);
 		this.setMinimumSize(new Dimension(400,200));
 		this.setTitle(TITLE);
-		
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage("./image/logo.png")); 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 	}
