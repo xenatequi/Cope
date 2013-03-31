@@ -9,21 +9,21 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 
+import tn.insat.androcope.MainWindow;
+
 public class WaitThread extends Thread{
 	
 	private static String MY_UUID = "04c6093b00001000800000805f9b34fb";
-	private boolean running ;
+	private MainWindow mainWindow;
 	private ProcessConnectionThread processThread;
+	
+	public WaitThread(MainWindow mainWindow){
+		this.mainWindow = mainWindow;
+	}
 	
 	@Override
 	public void run() {
-		while( running ) {
-			waitForConnection();   
-	    } 
-	} 
-	
-	public void setRunning(boolean running) {
-		this.running = running;
+			waitForConnection(); 
 	} 
 			
 	private void waitForConnection() {
@@ -43,25 +43,25 @@ public class WaitThread extends Thread{
             String url = "btspp://localhost:" + uuid.toString() + ";name=RemoteBluetooth";
             notifier = (StreamConnectionNotifier)Connector.open(url);
         } catch (BluetoothStateException e) {
-        	System.out.println("Bluetooth is not turned on.");
+        	mainWindow.setMessage("Bluetooth is not turned on", mainWindow.MESSAGE_ERROR);
 			e.printStackTrace();
 			return;
 		} catch (IOException e) {
-			System.out.println("Cannot read from Bluetooth.");
+			mainWindow.setMessage("Cannot read from Bluetooth.", mainWindow.MESSAGE_ERROR);
 			e.printStackTrace();
 			return;
 		}
 		
 		while(true) {
 			try {
-				System.out.println("Waiting for connection...");
+				mainWindow.setMessage("Waiting for connection...", mainWindow.MESSAGE_INFO);
 	            connection = notifier.acceptAndOpen();
 	           
-	            processThread = new ProcessConnectionThread(connection);
+	            processThread = new ProcessConnectionThread(connection, mainWindow);
 	            processThread.start();
 	            
 			} catch (IOException e) {
-				System.out.println("Problem occured while accepting an external connection...");
+				mainWindow.setMessage("Problem occured while accepting an external connection...", mainWindow.MESSAGE_ERROR);
 				e.printStackTrace();
 				return;
 			}

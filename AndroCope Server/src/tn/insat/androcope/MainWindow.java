@@ -17,12 +17,12 @@ import tn.insat.androcope.thread.WaitThread;
 
 public class MainWindow extends JFrame implements ActionListener {
 
+	public static int MESSAGE_INFO  = 1;
+	public static int MESSAGE_ERROR  = 2;
+	
 	private static String ICON_START = "./image/start.png";
 	private static String ICON_STOP  = "./image/stop.png";
 	private static String TITLE  = "Cope Server";
-
-	private static int MESSAGE_INFO  = 1;
-	private static int MESSAGE_ERROR  = 2;
 	
 	private JPanel buttonPanel = new JPanel();
 	private JPanel messagePanel = new JPanel();
@@ -31,7 +31,7 @@ public class MainWindow extends JFrame implements ActionListener {
 	private JButton start = null;
 	private JButton stop = null;
 	private JLabel message = new JLabel();
-	private WaitThread waitThread = new WaitThread();
+	private WaitThread waitThread;
 
 	public MainWindow()  {
 		this.initMessagePanel();
@@ -87,17 +87,18 @@ public class MainWindow extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getSource() == start) {
-			if (!(waitThread.isAlive())) {
+			if (waitThread == null) {
+				waitThread = new WaitThread(this);
+				waitThread.start();
+			}
+			else if (!(waitThread.isAlive())){	
 				waitThread.start();
 				setMessage("Server is waiting for connection", this.MESSAGE_INFO);
-			}else{
-				waitThread = new WaitThread();
-				waitThread.start();
 			}
 		}
 		else if (e.getSource() == stop) {
-			waitThread.setRunning(true);
 			setMessage("Server stopped", this.MESSAGE_INFO);
+			System.exit(0);
 		}
 	}
 	

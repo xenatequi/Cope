@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import javax.microedition.io.StreamConnection;
 
 import tn.insat.androcope.ClipboardListener;
+import tn.insat.androcope.MainWindow;
 import tn.insat.androcope.Mouse;
 import tn.insat.androcope.MouseRobot;
 
@@ -20,27 +21,26 @@ public class ProcessConnectionThread extends Thread{
 	private ClipboardListener clipboardListener;
 	private ObjectInputStream inputStream;
 	private ObjectOutputStream outputStream;
-	private boolean stopThread = false;
+	private MainWindow mainWindow;
 	
-	public ProcessConnectionThread(StreamConnection connection){
+	public ProcessConnectionThread(StreamConnection connection, MainWindow mainWindow){
 		this.connection = connection;
+		this.mainWindow = mainWindow;
 	}
 	
 	@Override
 	public void run() {
-		while( !stopThread ) {
 		try {
 			
 			initObjectStreams();
 	        initClipboard();
-
-			System.out.println("Waiting for input");
+	        mainWindow.setMessage("Waiting for input", mainWindow.MESSAGE_INFO);
 	
 			while (true) {
 	        	Mouse command = (Mouse)inputStream.readObject();
 	        	
 	        	if (command.getAction() == Mouse.EXIT_CMD){	
-	        		System.out.println("Finish process");
+	        		mainWindow.setMessage("Finish process", mainWindow.MESSAGE_INFO);
 	        		break;
 	        	}
 	        	
@@ -49,19 +49,9 @@ public class ProcessConnectionThread extends Thread{
         } catch (Exception e) {
     		e.printStackTrace();
     	}
-		}
 		
 		
-	}
-	
-	public  void setStop() {
-        this.stopThread = true;
-} 
-	
-	private void initClipboard() {
-		clipboardListener = new ClipboardListener(outputStream);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		clipboard.addFlavorListener(clipboardListener);
+		
 	}
 
 	private void initObjectStreams() {
@@ -74,11 +64,17 @@ public class ProcessConnectionThread extends Thread{
 	        outputStream = new ObjectOutputStream(os);
 	        outputStream.flush();
 		} catch (IOException e) {
-			System.out.println("Problem occured while establishing a connection");
+			mainWindow.setMessage("Problem occured while establishing a connection", MainWindow.MESSAGE_ERROR);
 			e.printStackTrace();
 		}
 	}
 
+	private void initClipboard() {
+		clipboardListener = new ClipboardListener(outputStream);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		clipboard.addFlavorListener(clipboardListener);
+	}
+	
 	private void processCommand(Mouse command) {
 		try {
 			MouseRobot robot = new MouseRobot();
