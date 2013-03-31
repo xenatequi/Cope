@@ -1,6 +1,7 @@
 package tn.insat.androcope.activity;
 
 import tn.insat.androcope.R;
+import tn.insat.androcope.bean.CountDown;
 import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
@@ -10,7 +11,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.example.splashscreen.CountDown;
 
 public class SplashScreenActivity extends Activity {
 	

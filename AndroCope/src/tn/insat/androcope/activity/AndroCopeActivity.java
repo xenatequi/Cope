@@ -14,10 +14,10 @@ import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
-import tn.insat.androcope.BluetoothCommandService;
-import tn.insat.androcope.GestureListener;
-import tn.insat.androcope.MessageHandler;
 import tn.insat.androcope.R;
+import tn.insat.androcope.listener.GestureListener;
+import tn.insat.androcope.service.BluetoothCommandService;
+import tn.insat.androcope.service.MessageHandler;
 
 public class AndroCopeActivity extends Activity {
 

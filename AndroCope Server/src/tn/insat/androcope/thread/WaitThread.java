@@ -9,7 +9,7 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 
-import tn.insat.androcope.MainWindow;
+import tn.insat.androcope.view.MainWindow;
 
 public class WaitThread extends Thread{
 	

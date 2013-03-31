@@ -2,8 +2,9 @@ package tn.insat.androcope.thread;
 
 import java.io.IOException;
 import java.util.UUID;
-import tn.insat.androcope.BluetoothCommandService;
-import tn.insat.androcope.MessageHandler;
+
+import tn.insat.androcope.service.BluetoothCommandService;
+import tn.insat.androcope.service.MessageHandler;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;

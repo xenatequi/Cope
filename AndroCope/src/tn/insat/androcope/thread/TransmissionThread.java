@@ -6,9 +6,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-import tn.insat.androcope.BluetoothCommandService;
-import tn.insat.androcope.MessageHandler;
-import tn.insat.androcope.Mouse;
+import tn.insat.androcope.bean.Mouse;
+import tn.insat.androcope.service.BluetoothCommandService;
+import tn.insat.androcope.service.MessageHandler;
 
 import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;

@@ -10,10 +10,10 @@ import java.io.OutputStream;
 
 import javax.microedition.io.StreamConnection;
 
-import tn.insat.androcope.ClipboardListener;
-import tn.insat.androcope.MainWindow;
-import tn.insat.androcope.Mouse;
-import tn.insat.androcope.MouseRobot;
+import tn.insat.androcope.bean.Mouse;
+import tn.insat.androcope.listener.ClipboardListener;
+import tn.insat.androcope.service.MouseRobot;
+import tn.insat.androcope.view.MainWindow;
 
 public class ProcessConnectionThread extends Thread{
 
