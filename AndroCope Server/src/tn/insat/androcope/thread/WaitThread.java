@@ -9,62 +9,81 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 
+import tn.insat.androcope.MainWindow;
+
 public class WaitThread extends Thread{
 	
 	private static String MY_UUID = "04c6093b00001000800000805f9b34fb";
-	private boolean running ;
-	private ProcessConnectionThread processThread;
+	private StreamConnectionNotifier notifier;
+	private StreamConnection connection;
+	private MainWindow mainWindow; 
+	
+	public WaitThread(MainWindow mainWindow){
+		this.mainWindow = mainWindow;
+	}
 	
 	@Override
 	public void run() {
-		while( running ) {
-			waitForConnection();   
-	    } 
+		prepareConnection();
+		waitForConnection();   
 	} 
 	
-	public void setRunning(boolean running) {
-		this.running = running;
-	} 
-			
-	private void waitForConnection() {
-
-		LocalDevice localDevice = null;
-		
-		StreamConnectionNotifier notifier;
-		StreamConnection connection = null;
-		
-		try {
+	private void prepareConnection() {
+		try{
+			LocalDevice localDevice = null;
 			localDevice = LocalDevice.getLocalDevice();
-			localDevice.setDiscoverable(DiscoveryAgent.GIAC);
+			if(localDevice.getDiscoverable() != DiscoveryAgent.GIAC){
+				localDevice.setDiscoverable(DiscoveryAgent.GIAC);
+			}
 			
 			UUID uuid = new UUID( MY_UUID, false);
 			System.out.println("UUID : " + uuid.toString());
 			
-            String url = "btspp://localhost:" + uuid.toString() + ";name=RemoteBluetooth";
-            notifier = (StreamConnectionNotifier)Connector.open(url);
-        } catch (BluetoothStateException e) {
-        	System.out.println("Bluetooth is not turned on.");
+	        String url = "btspp://localhost:" + uuid.toString() + ";name=RemoteBluetooth";
+	        notifier = (StreamConnectionNotifier)Connector.open(url);
+		} catch (BluetoothStateException e) {
+        	mainWindow.setMessage("Bluetooth is not turned on.", MainWindow.MESSAGE_ERROR);
 			e.printStackTrace();
 			return;
 		} catch (IOException e) {
-			System.out.println("Cannot read from Bluetooth.");
+			mainWindow.setMessage("Cannot read from Bluetooth.", MainWindow.MESSAGE_ERROR);
 			e.printStackTrace();
 			return;
 		}
-		
-		while(true) {
+	}
+			
+	private void waitForConnection() {
 			try {
-				System.out.println("Waiting for connection...");
+				mainWindow.setMessage("Waiting for connection...", MainWindow.MESSAGE_INFO);
 	            connection = notifier.acceptAndOpen();
-	           
-	            processThread = new ProcessConnectionThread(connection);
-	            processThread.start();
 	            
 			} catch (IOException e) {
-				System.out.println("Problem occured while accepting an external connection...");
+				mainWindow.setMessage("Problem occured while accepting an external connection...", MainWindow.MESSAGE_ERROR);
 				e.printStackTrace();
 				return;
 			}
-		}
+			
+			synchronized (this) {
+				mainWindow.setWaitThread(null);
+			}
+			
+			connect();
 	}
+
+	private void connect(){
+		if (mainWindow.getWaitThread() != null) {mainWindow.getWaitThread().cancel(); mainWindow.setWaitThread(null);}
+        if (mainWindow.getProcessThread() != null) {mainWindow.getProcessThread().cancel(); mainWindow.setProcessThread(null);}
+
+        mainWindow.setProcessThread(new ProcessConnectionThread(connection, mainWindow));
+        mainWindow.getProcessThread().start();
+	}
+	
+	public void cancel() {
+		try {
+			notifier.close();
+		} catch (Exception e) {
+			mainWindow.setMessage("Error occured while stopping Cope Server", MainWindow.MESSAGE_ERROR);
+			e.printStackTrace();
+		}
+	} 
 }

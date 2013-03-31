@@ -31,11 +31,11 @@ public class TransmissionThread extends Thread {
         ObjectOutputStream tmpOut = null;
 
         try {
-        	InputStream is = socket.getInputStream();
-        	OutputStream os = socket.getOutputStream();
-            tmpOut = new ObjectOutputStream(os);
-            tmpOut.flush();
-            tmpIn = new ObjectInputStream(is);
+        	InputStream is = socket.getInputStream();    
+        	OutputStream os = socket.getOutputStream();   
+            tmpOut = new ObjectOutputStream(os);           
+            tmpOut.flush();								Log.e(TAG, "flush");
+            tmpIn = new ObjectInputStream(is);			Log.e(TAG, "is");
             
         } catch (IOException e) {
             Log.e(TAG, "Temp sockets not created", e);
@@ -54,6 +54,11 @@ public class TransmissionThread extends Thread {
         while (true) {
             try {
                 Mouse mouse = (Mouse)inputStream.readObject();
+                
+                if(mouse.getAction() == Mouse.EXIT_CMD){
+                	Log.e(TAG, "Finish process");
+                	break;
+                }
                 Mouse.CLIPBOARD = mouse.getClipboard();
                 
                 Message msg = commandService.getHandler().obtainMessage(MessageHandler.MESSAGE_TOAST);
