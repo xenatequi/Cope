@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import javax.microedition.io.StreamConnection;
 
 import tn.insat.androcope.ClipboardListener;
-import tn.insat.androcope.MainWindow;
 import tn.insat.androcope.Mouse;
 import tn.insat.androcope.MouseRobot;
 
@@ -21,26 +20,27 @@ public class ProcessConnectionThread extends Thread{
 	private ClipboardListener clipboardListener;
 	private ObjectInputStream inputStream;
 	private ObjectOutputStream outputStream;
-	private MainWindow mainWindow; 
+	private boolean stopThread = false;
 	
-	public ProcessConnectionThread(StreamConnection connection, MainWindow mainWindow){
+	public ProcessConnectionThread(StreamConnection connection){
 		this.connection = connection;
-		this.mainWindow = mainWindow;
 	}
 	
 	@Override
 	public void run() {
+		while( !stopThread ) {
 		try {
+			
 			initObjectStreams();
 	        initClipboard();
 
-			mainWindow.setMessage("Waiting for input...", MainWindow.MESSAGE_INFO);
+			System.out.println("Waiting for input");
 	
 			while (true) {
 	        	Mouse command = (Mouse)inputStream.readObject();
 	        	
 	        	if (command.getAction() == Mouse.EXIT_CMD){	
-	        		mainWindow.setMessage("Finish process", MainWindow.MESSAGE_INFO);
+	        		System.out.println("Finish process");
 	        		break;
 	        	}
 	        	
@@ -49,9 +49,14 @@ public class ProcessConnectionThread extends Thread{
         } catch (Exception e) {
     		e.printStackTrace();
     	}
+		}
 		
 		
 	}
+	
+	public  void setStop() {
+        this.stopThread = true;
+} 
 	
 	private void initClipboard() {
 		clipboardListener = new ClipboardListener(outputStream);
@@ -69,7 +74,7 @@ public class ProcessConnectionThread extends Thread{
 	        outputStream = new ObjectOutputStream(os);
 	        outputStream.flush();
 		} catch (IOException e) {
-			mainWindow.setMessage("Problem occured while establishing a connection", MainWindow.MESSAGE_ERROR);
+			System.out.println("Problem occured while establishing a connection");
 			e.printStackTrace();
 		}
 	}
@@ -99,16 +104,4 @@ public class ProcessConnectionThread extends Thread{
 			e.printStackTrace();
 		}
 	}
-	
-	public void cancel() {
-		try {
-			outputStream.writeObject(new Mouse(Mouse.EXIT_CMD, 0,0));
-			outputStream.flush();
-			inputStream.close();
-			connection.close();
-		} catch (IOException e) {
-			mainWindow.setMessage("Error occured while stopping Cope Server", MainWindow.MESSAGE_ERROR);
-			e.printStackTrace();
-		}
-	} 
 }

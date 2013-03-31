@@ -13,17 +13,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import tn.insat.androcope.thread.ProcessConnectionThread;
 import tn.insat.androcope.thread.WaitThread;
 
 public class MainWindow extends JFrame implements ActionListener {
 
-	public static int MESSAGE_INFO  = 1;
-	public static int MESSAGE_ERROR  = 2;
-	
 	private static String ICON_START = "./image/start.png";
 	private static String ICON_STOP  = "./image/stop.png";
 	private static String TITLE  = "Cope Server";
+
+	private static int MESSAGE_INFO  = 1;
+	private static int MESSAGE_ERROR  = 2;
 	
 	private JPanel buttonPanel = new JPanel();
 	private JPanel messagePanel = new JPanel();
@@ -32,9 +31,8 @@ public class MainWindow extends JFrame implements ActionListener {
 	private JButton start = null;
 	private JButton stop = null;
 	private JLabel message = new JLabel();
-	private WaitThread waitThread;
-	private ProcessConnectionThread processThread;
-	
+	private WaitThread waitThread = new WaitThread();
+
 	public MainWindow()  {
 		this.initMessagePanel();
 		this.initButtonPanel();
@@ -89,21 +87,16 @@ public class MainWindow extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getSource() == start) {
-			if (waitThread == null && processThread == null){
-				waitThread = new WaitThread(this);
+			if (!(waitThread.isAlive())) {
 				waitThread.start();
 				setMessage("Server is waiting for connection", this.MESSAGE_INFO);
+			}else{
+				waitThread = new WaitThread();
+				waitThread.start();
 			}
 		}
 		else if (e.getSource() == stop) {
-			if (waitThread != null){
-				waitThread.cancel(); 
-				waitThread = null ;
-			}
-			if (processThread != null){
-				processThread.cancel(); 
-				processThread = null ;
-			}
+			waitThread.setRunning(true);
 			setMessage("Server stopped", this.MESSAGE_INFO);
 		}
 	}
@@ -111,24 +104,6 @@ public class MainWindow extends JFrame implements ActionListener {
 	public void setMessage(String message, int type) {
 		this.message.setText(message);
 	}
-
-	public WaitThread getWaitThread() {
-		return waitThread;
-	}
-
-	public void setWaitThread(WaitThread waitThread) {
-		this.waitThread = waitThread;
-	}
-
-	public ProcessConnectionThread getProcessThread() {
-		return processThread;
-	}
-
-	public void setProcessThread(ProcessConnectionThread processThread) {
-		this.processThread = processThread;
-	}
-	
-	
 
 
 }
